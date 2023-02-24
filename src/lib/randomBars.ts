@@ -1,12 +1,15 @@
 import guidGenerator from './guid';
 
 function getRandomBars(n: number) {
-	const bars = [];
-	for (let i = 0; i < n; i++) {
-		bars.push({
-			id: guidGenerator(),
-			value: Math.floor(Math.random() * (50 - 1 + 1) + 1)
-		});
+	const bars = [...new Array(n).keys()].map((b) => ({
+		id: guidGenerator(),
+		value: (100 / n) * b + 10
+	}));
+	let l = bars.length,
+		i;
+	while (l) {
+		i = Math.floor(Math.random() * l--);
+		[bars[i], bars[l]] = [bars[l], bars[i]];
 	}
 	return bars;
 }
