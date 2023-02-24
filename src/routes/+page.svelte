@@ -8,7 +8,7 @@
 		bubbleSort
 	};
 	let currentAlgorithm: 'bubbleSort' = 'bubbleSort';
-	let n = 60;
+	let n = 100;
 	let delay = 50;
 
 	let bars: Array<{
@@ -16,23 +16,31 @@
 			value: number;
 		}> = getRandomBars(n),
 		currentIndex: number,
-		nextCurrentIndex: number,
+		nextIndex: number,
 		currentN: number,
 		newCurrentN: number,
 		swapped: boolean,
 		interval: NodeJS.Timer;
 
-	function* bubbleSort(array: Array<{ id: string; value: number }>) {
+	function* bubbleSort(
+		array: Array<{ id: string; value: number }>
+	): Iterator<
+		{ current: string; next: string; swap: boolean },
+		void,
+		{ current: string; next: string; swap: boolean }
+	> {
 		for (let i = 0; i < array.length; i++) {
 			for (let j = 0; j < array.length - i - 1; j++) {
-				currentIndex = j;
-				if (array[j] > array[j + 1]) {
+				yield {
+					current: array[j].id,
+					next: array[j + 1].id,
+					swap: array[j].value > array[j + 1].value
+				};
+				if (array[j].value > array[j + 1].value) {
 					[array[j], array[j + 1]] = [array[j + 1], array[j]];
 				}
-				yield array;
 			}
 		}
-		return yield array;
 	}
 
 	// function* mergeSort(array: Array<number>) {
@@ -78,21 +86,34 @@
 	// }
 
 	function updateDelay() {
-		clearInterval(interval);
-		interval = setInterval(
-			() => (bars = algorithm[currentAlgorithm]([...bars]).next().value),
-			delay
-		);
+		// clearInterval(interval);
+		// interval = setInterval(
+		// 	() => (bars = ),
+		// 	delay
+		// );
+	}
+
+	function algo() {
+		return algorithm[currentAlgorithm]([...bars]);
 	}
 
 	function init() {
 		currentIndex = 0;
 		bars = getRandomBars(n);
+		const currentAlgo = algo();
 		setTimeout(() => {
-			interval = setInterval(
-				() => (bars = algorithm[currentAlgorithm]([...bars]).next().value),
-				delay
-			);
+			interval = setInterval(() => {
+				let value = currentAlgo.next().value;
+				if (value) {
+					currentIndex = bars.findIndex((bar) => bar.id === value?.current);
+					nextIndex = bars.findIndex((bar) => bar.id === value?.next);
+					if (value.swap && currentIndex !== -1 && nextIndex !== -1) {
+						[bars[currentIndex], bars[nextIndex]] = [bars[nextIndex], bars[currentIndex]];
+					}
+				} else {
+					clearInterval(interval);
+				}
+			}, delay);
 		}, delay);
 	}
 
@@ -128,7 +149,7 @@
 			<div class="flex flex-auto relative" animate:flip={{ duration: delay }}>
 				<div
 					style="height: {bar.value}px"
-					class:bg-red-500={i == currentIndex || i == nextCurrentIndex}
+					class:bg-red-500={i == currentIndex || i == nextIndex}
 					class="bg-indigo-500 w-full rounded-sm absolute bottom-0"
 				/>
 			</div>
