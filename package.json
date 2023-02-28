@@ -17,6 +17,7 @@
 		"@neoconfetti/svelte": "^1.0.0",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/adapter-static": "^2.0.1",
 		"@sveltejs/kit": "^1.5.0",
 		"@types/cookie": "^0.5.1",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
@@ -36,5 +37,8 @@
 		"vite": "^4.0.0",
 		"vitest": "^0.25.3"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"p5-svelte": "^3.1.2"
+	}
 }
