@@ -57,7 +57,7 @@ describe('Sorting algorithms tests', async () => {
 
 	it('Merge sorting test', async () => {
 		bars = shuffle(bars);
-        await log(JSON.stringify({ bars }, null, 2));
+		// await log(JSON.stringify({ bars }, null, 2));
 		const algo = mergeSort(bars);
 		let sorted = false;
 
@@ -72,10 +72,17 @@ describe('Sorting algorithms tests', async () => {
 				sorted = true;
 			}
 			if (value && !done) {
-				await log(JSON.stringify({ value }, null, 2));
-				currentIndex = bars.findIndex((bar) => bar.id == value.current);
-				nextIndex = bars.findIndex((bar) => bar.id == value.next);
-				await log(`${currentIndex} ${nextIndex}`);
+				currentIndex = bars.findIndex(async (bar) => {
+					await log(`${bar.id} ${value.current}`);
+					return bar.id == value.current;
+				});
+				expect(currentIndex).not.toBe(-1);
+				nextIndex = bars.findIndex(async (bar) => {
+                    await log(`${bar.id} ${value.current}`);
+					return bar.id == value.current;
+				});
+                await log('');
+				expect(nextIndex).not.toBe(-1);
 				if (value.swap && currentIndex !== -1 && nextIndex !== -1) {
 					[bars[currentIndex], bars[nextIndex]] = [bars[nextIndex], bars[currentIndex]];
 				}
