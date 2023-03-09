@@ -12,6 +12,7 @@
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 	import { confetti } from '@neoconfetti/svelte';
+	import { extractFromArrayAt } from '$lib/extract';
 
 	const algorithm = {
 		bubbleSort,
@@ -35,7 +36,7 @@
 		}> = [],
 		currentIndex: number,
 		nextIndex: number,
-		algo: Iterator<{ current: string; next: string; swap: boolean }>,
+		algo: Iterator<{ current: string; next: string; swap?: boolean; extract?: boolean }>,
 		interval: NodeJS.Timer,
 		sorted: boolean = false;
 
@@ -56,8 +57,14 @@
 			if (value) {
 				currentIndex = bars.findIndex((bar) => bar.id === value.current);
 				nextIndex = bars.findIndex((bar) => bar.id === value.next);
-				if (value.swap && currentIndex !== -1 && nextIndex !== -1) {
-					[bars[currentIndex], bars[nextIndex]] = [bars[nextIndex], bars[currentIndex]];
+				if (currentIndex !== -1 && nextIndex !== -1) {
+					if (value.swap) {
+						[bars[currentIndex], bars[nextIndex]] = [bars[nextIndex], bars[currentIndex]];
+					}
+					if (value.extract) {
+						const extractedValue = extractFromArrayAt(bars, [nextIndex]);
+						bars.splice(currentIndex, 0, ...extractedValue);
+					}
 				}
 			}
 		} catch (error) {
