@@ -40,11 +40,6 @@
 		interval: NodeJS.Timeout,
 		sorted: boolean = false;
 
-	function updateDelay() {
-		clearInterval(interval);
-		interval = setInterval(display, delay);
-	}
-
 	function display() {
 		try {
 			const { done, value } = algo.next();
@@ -142,7 +137,6 @@
 					type="number"
 					class="bg-inherit rounded border border-slate-400"
 					bind:value={delay}
-					on:input={updateDelay}
 					min="100"
 					max="5000"
 				/>
