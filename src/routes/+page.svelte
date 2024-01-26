@@ -37,7 +37,7 @@
 		currentIndex: number,
 		nextIndex: number,
 		algo: Iterator<{ current: string; next: string; swap?: boolean; extract?: boolean }>,
-		interval: NodeJS.Timer,
+		interval: NodeJS.Timeout,
 		sorted: boolean = false;
 
 	function updateDelay() {
